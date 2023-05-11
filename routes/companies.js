@@ -3,7 +3,7 @@
 const express = require("express");
 const router = new express.Router();
 const db = require("../db");
-const { NotFoundError } = require("../expressError");
+const { NotFoundError, BadRequestError } = require("../expressError");
 
 /**GET /companies
  * Returns list of companies, like {companies: [{code, name}, ...]}
@@ -45,7 +45,7 @@ router.get("/:code", async function (req, res, next) {
  */
 
 router.post("/", async function (req, res, next) {
-  if (req.body === undefined) throw new BadRequestError();
+  if (!req.body === false) throw new BadRequestError();
 
   const results = await db.query(
     `INSERT INTO companies (code, name, description)
@@ -64,14 +64,13 @@ router.post("/", async function (req, res, next) {
  */
 
 router.put("/:code", async function (req, res, next) {
-  if (req.body === undefined) throw new BadRequestError();
+  if (!req.body === false) throw new BadRequestError();
 
   const results = await db.query(
     `UPDATE companies
     SET name=$1, description=$2
     WHERE code = $3
-    RETURNING code, name, description
-    `,
+    RETURNING code, name, description`,
     [req.body.name, req.body.description, req.params.code]
   );
 
@@ -90,9 +89,7 @@ router.put("/:code", async function (req, res, next) {
 
 router.delete("/:code", async function (req, res, next) {
   const results = await db.query(
-    `
-  DELETE FROM companies WHERE code = $1 RETURNING code
-  `,
+    `DELETE FROM companies WHERE code = $1 RETURNING code`,
     [req.params.code]
   );
 
