@@ -27,7 +27,7 @@ router.get("/", async function (req, res, next) {
 
 router.get("/:id", async function (req, res, next) {
   const results = await db.query(
-    `SELECT id, amt, paid, add_date, paid_date
+    `SELECT id, amt, paid, add_date, paid_date, comp_code
     FROM invoices
     WHERE id = $1`,
     [req.params.id]
@@ -49,6 +49,7 @@ router.get("/:id", async function (req, res, next) {
   const company = results2.rows[0];
 
   invoice.company = company;
+  delete invoice.comp_code;
   return res.json({ invoice });
 });
 
