@@ -5,7 +5,7 @@ const router = new express.Router();
 const db = require("../db");
 const { NotFoundError, BadRequestError } = require("../expressError");
 
-/* GET /invoices
+/**GET /invoices
  * Return info on invoices: like {invoices: [{id, comp_code}, ...]}
  */
 router.get("/", async function (req, res, next) {
@@ -17,7 +17,7 @@ router.get("/", async function (req, res, next) {
   return res.json({ invoices: results.rows });
 });
 
-/* GET /invoices/[id]
+/**GET /invoices/[id]
  * Returns obj on given invoice.
  *
  * If invoice cannot be found, returns 404.
@@ -53,7 +53,7 @@ router.get("/:id", async function (req, res, next) {
 });
 
 
-/* POST /invoices
+/**POST /invoices
  * Adds an invoice.
  * Needs to be passed in JSON body of: {comp_code, amt}
  * Returns: {invoice: {id, comp_code, amt, paid, add_date, paid_date}}
@@ -62,29 +62,23 @@ router.get("/:id", async function (req, res, next) {
 
 
 
-/* PUT /invoices/[id]
-Updates an invoice.
-
-If invoice cannot be found, returns a 404.
-
-Needs to be passed in a JSON body of {amt}
-
-Returns: {invoice: {id, comp_code, amt, paid, add_date, paid_date}}
+/**PUT /invoices/[id]
+ * Updates an invoice.
+ * If invoice cannot be found, returns a 404.
+ * Needs to be passed in a JSON body of {amt}
+ * Returns: {invoice: {id, comp_code, amt, paid, add_date, paid_date}}
  */
 
-/* DELETE /invoices/[id]
-Deletes an invoice.
 
-If invoice cannot be found, returns a 404.
-
-Returns: {status: "deleted"}
-*/
+/**DELETE /invoices/[id]
+ * Deletes an invoice.
+ * If invoice cannot be found, returns a 404.
+ * Returns: {status: "deleted"}
+ */
 
 
 // Also, one route from the previous part should be updated:
-/* GET /companies/[code]
-Return obj of company: {company: {code, name, description, invoices: [id, ...]}}
-
-If the company given cannot be found, this should return a 404 status response.
-
+/**GET /companies/[code]
+ * Return obj of company: {company: {code, name, description, invoices: [id, ...]}}
+ * If the company given cannot be found, this should return a 404 status response.
  */
