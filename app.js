@@ -16,6 +16,8 @@ app.use("/companies", companiesRoutes);
 // route for /invoices
 
 
+
+
 /** 404 handler: matches unmatched routes; raises NotFoundError. */
 app.use(function (req, res, next) {
   throw new NotFoundError();
