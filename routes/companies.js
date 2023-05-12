@@ -32,27 +32,27 @@ router.get("/", async function (req, res, next) {
  */
 
 router.get("/:code", async function (req, res, next) {
-  const results = await db.query(
+  const { rows: [company] } = await db.query(
     `SELECT code, name, description
     FROM companies
     WHERE code = $1`,
     [req.params.code]
   );
 
-  const company = results.rows[0];
-  if (!results.rows[0]) {
+  // const company = results.rows[0];
+  if (!company) {
     throw new NotFoundError("Company code could not be found.");
   }
 
-  const results2 = await db.query(
+  const { rows: invoices } = await db.query(
     `SELECT id
     FROM invoices
     WHERE comp_code = $1`,
     [req.params.code]
   );
 
-  const invoices = results2.rows.map((i) => i.id);
-  company.invoices = invoices;
+  const invoiceIds = invoices.map((i) => i.id);
+  company.invoices = invoiceIds;
 
   return res.json({ company });
 });

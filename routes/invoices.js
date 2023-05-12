@@ -26,27 +26,23 @@ router.get("/", async function (req, res, next) {
  */
 
 router.get("/:id", async function (req, res, next) {
-  const results = await db.query(
+  const { rows: [invoice] } = await db.query(
     `SELECT id, amt, paid, add_date, paid_date, comp_code
     FROM invoices
     WHERE id = $1`,
     [req.params.id]
   );
 
-  const invoice = results.rows[0];
-
   if (!invoice) {
     throw new NotFoundError("Invoice id could not be found.");
   }
 
-  const results2 = await db.query(
+  const { rows: [company] } = await db.query(
     `SELECT code, name, description
     FROM companies
     WHERE companies.code = $1`,
     [invoice.comp_code]
   );
-
-  const company = results2.rows[0];
 
   invoice.company = company;
   delete invoice.comp_code;
