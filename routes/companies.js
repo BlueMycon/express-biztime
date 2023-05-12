@@ -4,6 +4,8 @@ const express = require("express");
 const router = new express.Router();
 const db = require("../db");
 const { NotFoundError, BadRequestError } = require("../expressError");
+const slugify = require('slugify')
+
 
 /**GET /companies
  * Returns list of companies, like {companies: [{code, name}, ...]}
@@ -62,13 +64,19 @@ router.get("/:code", async function (req, res, next) {
  */
 
 router.post("/", async function (req, res, next) {
-  if (!req.body === false) throw new BadRequestError();
+  if (req.body === undefined) throw new BadRequestError();
+
+  const code = slugify(req.body.name, {
+    replacement: '',
+    lower: true,
+    strict: true
+  });
 
   const results = await db.query(
     `INSERT INTO companies (code, name, description)
     VALUES ($1, $2, $3)
     RETURNING code, name, description`,
-    [req.body.code, req.body.name, req.body.description]
+    [code, req.body.name, req.body.description]
   );
   const company = results.rows[0];
   return res.status(201).json({ company });
